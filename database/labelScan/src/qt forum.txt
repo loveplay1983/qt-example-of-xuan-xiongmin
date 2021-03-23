@@ -1,0 +1,14 @@
+https://forum.qt.io/topic/92626/cant-connect-to-mysql-database-qmysql-driver-not-loaded/8
+
+
+
+ installed MySQL community edition
+I installed mysql connector c 6.1
+I created a .bat file with the following commands: C:\Windows\System32\cmd.exe /E:ON /V:ON /K C:\Qt\Qt5.13.0\5.13.0\mingw73_32\bin\qmake.exe
+SET _ROOT=C:\Qt\Qt5.13.0
+SET PATH=C:\Qt\Qt5.13.0\5.13.0\mingw73_32\bin;C:\Qt\Qt5.13.0\Tools\mingw730_32\bin;%PATH%
+I run cd C:\Qt\Qt5.13.0\5.13.0\Src\qtbase\src\plugins\sqldrivers
+I run qmake -- MYSQL_INCDIR="C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include" MYSQL_LIBDIR="C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\lib"
+mingw32-make
+ming32-make install
+And lastly, I copied libmysql.dll from C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\lib to C:\Qt\Qt5.13.0\Tools\mingw730_32\bin

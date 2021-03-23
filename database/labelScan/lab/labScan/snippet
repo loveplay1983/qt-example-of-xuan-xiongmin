@@ -1,0 +1,162 @@
+
+//        if(getUserPass->rowCount() == 1)
+//        {
+//            accept();
+//            dbConnection.open();
+
+//            //            updateLogin->prepare("UPDATE login SET loginFlag = '1' WHERE userNmae = :userName AND passwd = :userName");
+//            //            updateLogin->bindValue(":userName", inputUser);
+//            //            updateLogin->bindValue(":userName", inputPasswd);
+//            QSqlQuery test;
+//            test.prepare("SELECT userComment FROM login WHERE userName = :uesr AND passwd = :passwd");
+//            test.bindValue(":user", inputUser);
+//            test.bindValue(":passwd", inputPasswd);
+//            test.exec();
+//            if(test.first())
+//            {
+//                QString testInfo = test.value(0).toString();
+//                QMessageBox::information(this, "Info", testInfo);
+
+//            }
+//            else
+//            {
+//                QMessageBox::information(this, tr("提示"), tr("更新登录状态出错"));
+//            }
+
+//            //            if(!updateLogin->exec())
+//            //            {
+
+//            //            }
+//            //            else
+//            //            {
+//            //                userComment->prepare("SELECT userComment FROM login WHERE userName = :uesr AND passwd = :passwd");
+//            //                userComment->bindValue(":user", inputUser);
+//            //                userComment->bindValue(":passwd", inputPasswd);
+//            //                userComment->exec();
+//            //                userComment->next();
+//            //                QString loginName = userComment->value(1).toString();
+//            //                QMessageBox::information(this, tr("提示"), loginName+"登录成功");
+
+//            //            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "loginform.h"
+#include "ui_loginform.h"
+#include <QMessageBox>
+
+using namespace std;
+
+Loginform::Loginform(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::Loginform)
+{
+    ui->setupUi(this);
+
+    this->init();
+    this->sigSlots();
+}
+
+Loginform::~Loginform()
+{
+    delete ui;
+}
+
+void Loginform::init()
+{
+    QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
+
+    ui->editUser->setPlaceholderText(tr("请输入用户名"));
+    ui->editPasswd->setPlaceholderText(tr("请输入密码"));
+    ui->editPasswd->setEchoMode(QLineEdit::Password);   // Hide the passwd when editing
+
+    this->conDb();
+}
+
+void Loginform::sigSlots()
+{
+    connect(ui->btnLogin, SIGNAL(clicked()), this, SLOT(login()));
+    connect(ui->btnQuit, SIGNAL(clicked()), this, SLOT(quit()));
+}
+
+void Loginform::conDb()
+{
+    dbConnection = QSqlDatabase::addDatabase("QMYSQL", "labelScanDb");
+    dbConnection.setHostName("localhost");
+    dbConnection.setDatabaseName("labelScan");
+    dbConnection.setUserName("root");
+    dbConnection.setPassword("pgjdcwn040506");
+
+
+}
+
+void Loginform::login()
+{
+    //    QSqlDatabase db = QSqlDatabase::database("labelScanDb");
+
+    if(!dbConnection.open())
+    {
+        QMessageBox::information(this, tr("Connection"), tr("Connect to mysql failed!!!"));
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Connection"), tr("Mysql connected!!!"));
+
+        inputUser = ui->editUser->text();
+        inputPasswd = ui->editPasswd->text();
+
+        QSqlTableModel getUserPass;
+        getUserPass.setTable("login");
+        getUserPass.setFilter(tr("userName = '%1' and passwd = '%2'").arg(inputUser).arg(inputPasswd));
+        getUserPass.select();
+        QMessageBox::information(this, "login", QString::number(getUserPass.rowCount()));
+
+        if(getUserPass.rowCount() == 1)
+        {
+            accept();
+            QSqlQuery test;
+            test.prepare("SELECT userComment FROM login WHERE userName = :uesr AND passwd = :passwd");
+            test.bindValue(":user", inputUser);
+            test.bindValue(":passwd", inputPasswd);
+            test.exec();
+            if(test.first())
+            {
+                QString testInfo = test.value(0).toString();
+                QMessageBox::information(this, "Info", testInfo);
+            }
+            else
+            {
+                QMessageBox::information(this, tr("提示"), tr("更新登录状态出错"));
+            }
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("警告！！！"), tr("用户名或密码有错！！！"), QMessageBox::Yes);
+
+            // clean input entry
+            ui->editUser->clear();
+            ui->editPasswd->clear();
+
+            // input entry focus
+            ui->editUser->setFocus();
+        }
+    }
+
+}
+
+void Loginform::quit()
+{
+    QApplication::exit();
+}

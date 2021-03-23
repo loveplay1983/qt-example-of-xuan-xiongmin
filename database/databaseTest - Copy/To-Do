@@ -1,0 +1,12 @@
+# Things need to be improved
+1. Set up SIGNAL and SLOT in order to control the scanEntry focus when switching different windows
+2. Clean up all the redundant code
+3.
+
+# Future improvement
+1. Set up mysql database
+2. set up nurse side client and lab side client
+3. compare the nurse side and lab side data within the mysql database
+4. store the data in a good manner
+5. if it is feasible, go design a login system which will allow different user to have access to the lab scan system
+6. the system will grow way more complex, seeking a better server.

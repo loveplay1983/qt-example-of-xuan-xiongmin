@@ -1,0 +1,92 @@
+1. mysql driver
+https://blog.csdn.net/qq_43219379/article/details/106893163
+
+
+2. maria db driver
+https://blog.csdn.net/a3573/article/details/105297367/
+
+3. use QSqlDatabase through out different classes
+https://forum.qt.io/topic/103699/multiple-classes-database-connection/2
+
+################################################################################################################
+Hi and welcome to the forums.-
+If you mean to access the same database from multiple classes,
+then Qt already can do this for you.
+
+bool createConnection()
+{
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");  << << Looks like a local var but is kept internally
+    db.setDatabaseName(":memory:");
+    //  db.setDatabaseName("c:\\folder\\test.db");
+    if (!db.open()) {
+        QMessageBox::critical(0, qApp->tr("Cannot open database"), "Click Cancel to exit.",
+                              QMessageBox::Cancel);
+        return ;
+    }
+    QSqlQuery query;
+    qDebug() << "table:" <<   query.exec("create table person (id int primary key, "
+                                         "firstname varchar(20), lastname varchar(20), num int )");
+    query.exec("insert into person (firstname , lastname, num) values('Dennis', 'Young','1')");
+    query.exec("insert into person values(102, 'Christine', 'Holand','2')");
+    query.exec("insert into person values(103, 'Lars junior', 'Gordon','4')");
+    query.exec("insert into person values(104, 'Roberto', 'Robitaille','5')");
+    query.exec("insert into person values(105, 'Maria', 'Papadopoulos','3')");
+    return true;
+}
+later we can just do
+
+void ProcessDB()
+{
+    QSqlQuery query;
+    bool ok = query.prepare("SELECT * from person ");
+    query.exec();
+    while (query.next()) {
+        QString name = query.value(2).toString(); // col 1 = name
+        qDebug() << ">" << name;
+    }
+}
+and QSqlQuery uses the default database we open in the other function.
+
+so there is no need to transfer the DB instance around.
+
+However, i can highly recommend hiding all QSqlQuery related stuff in a class so
+the whole program does not have to know how it's stored in the database.
+
+##################################################################################################################################
+
+
+4. checkbox QTableWidget
+https://evileg.com/en/post/78/
+##################################################################################################################################
+QTableWidgetItem *item = new QTableWidgetItem();
+        item->data(Qt::CheckStateRole);
+        /* Check on the status of odd if an odd device,
+         * exhibiting state of the checkbox in the Checked, Unchecked otherwise
+         * */
+        if(query.value(1).toInt() == 1){
+            item->setCheckState(Qt::Checked);
+        } else {
+            item->setCheckState(Qt::Unchecked);
+        }
+##################################################################################################################################
+
+
+5. QTableWidget rightclick
+https://forum.qt.io/topic/94905/simpliest-way-for-creating-contextmenu-for-qtablewidget-cells/6
+###################################################################################################################################
+MainWindow(QWidget *parent)
+    QWidget(parent)
+{
+    _myTableWidget = new QTableWidget;
+    // layout stuff etc.
+    connect(_myTableWidget, &QTableWidget::customContextMenuRequested, this, &handleContextMenu);
+}
+
+void MainWindow::handleContextMenu(const QPoint& pos)
+{
+    QTableWidgetItem *item = _myTableWidget->itemAt(pos);
+    if (item) {
+        // do what you want with the item.
+    }
+}
+##################################################################################################################################

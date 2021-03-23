@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CCUtils</class>
+ <widget class="QMainWindow" name="CCUtils">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1010</width>
+    <height>675</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CCUtils</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1010</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_start">
+    <property name="title">
+     <string>开始</string>
+    </property>
+    <addaction name="start_about"/>
+    <addaction name="separator"/>
+    <addaction name="start_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_utils">
+    <property name="title">
+     <string>工具</string>
+    </property>
+    <widget class="QMenu" name="utils_ward">
+     <property name="title">
+      <string>病区</string>
+     </property>
+     <addaction name="ward_cancel_bed"/>
+     <addaction name="ward_cancel_smile"/>
+    </widget>
+    <addaction name="utils_cc"/>
+    <addaction name="utils_clinic"/>
+    <addaction name="utils_ward"/>
+    <addaction name="utils_charge"/>
+    <addaction name="utils_others"/>
+   </widget>
+   <addaction name="menu_start"/>
+   <addaction name="menu_utils"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="start_about">
+   <property name="text">
+    <string>关于</string>
+   </property>
+  </action>
+  <action name="utils_cc">
+   <property name="text">
+    <string>计算机中心</string>
+   </property>
+  </action>
+  <action name="utils_clinic">
+   <property name="text">
+    <string>诊间</string>
+   </property>
+  </action>
+  <action name="utils_charge">
+   <property name="text">
+    <string>收费</string>
+   </property>
+  </action>
+  <action name="utils_others">
+   <property name="text">
+    <string>行政后勤</string>
+   </property>
+  </action>
+  <action name="start_exit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="ward_cancel_bed">
+   <property name="text">
+    <string>取消已预约床位</string>
+   </property>
+  </action>
+  <action name="ward_cancel_smile">
+   <property name="text">
+    <string>停止配置中心笑脸</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

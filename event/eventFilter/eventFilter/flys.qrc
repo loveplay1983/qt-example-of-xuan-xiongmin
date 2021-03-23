@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/flys">
+        <file>img/fly_0.png</file>
+        <file>img/fly_1.png</file>
+        <file>img/fly_bee.png</file>
+    </qresource>
+</RCC>
