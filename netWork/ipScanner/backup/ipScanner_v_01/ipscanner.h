@@ -2,15 +2,12 @@
 #define IPSCANNER_H
 
 #include <QWidget>
+#include <QProcess>
 #include <QDir>
 #include <QFileDialog>
 #include <QStringList>
 #include <QString>
-#include <QHostInfo>
 #include <QMessageBox>
-#include <QTableWidgetItem>
-#include <QTableWidget>
-#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IpScanner; }
@@ -26,24 +23,16 @@ public:
 
     // Initialization
     void init();
-    int static rowNum;
 
 public slots:
-    void lookupHostInfo(const QHostInfo &host);
+
+    void onIpActivated(const QString &ipAddr);
     void saveOutput();
-    void resetOutput();
 
 private:
     Ui::IpScanner *ui;
+    // Execute the nbtscan program and pass the output to then save to
+    QProcess *runNbtscan;
 
-    // tableItem to display ip and hostname
-    QTableWidgetItem *ipItem;
-    QTableWidgetItem *hostName;
-
-private slots:
-    void onNetAddrEntered();
 };
-
-
-
 #endif // IPSCANNER_H

@@ -19,7 +19,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QGridLayout" name="gridLayout" columnstretch="2,2,7,2">
+        <layout class="QGridLayout" name="gridLayout" columnstretch="2,2,10,2">
          <item row="0" column="1">
           <widget class="QLabel" name="labelChooseRange">
            <property name="font">
@@ -28,29 +28,10 @@
              <pointsize>14</pointsize>
             </font>
            </property>
-           <property name="toolTip">
-            <string>输入网段地址，注意不要加上主机地址</string>
-           </property>
            <property name="text">
-            <string>输入网络地址</string>
+            <string>选择网络范围</string>
            </property>
           </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLineEdit" name="netAddr"/>
-         </item>
-         <item row="0" column="3">
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
          <item row="0" column="0">
           <spacer name="horizontalSpacer_3">
@@ -65,23 +46,68 @@
            </property>
           </spacer>
          </item>
+         <item row="0" column="2">
+          <widget class="QComboBox" name="ipRange">
+           <item>
+            <property name="text">
+             <string>192.9.0.0/16</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.9.6.0/24</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.9.7.0/24</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.9.10.0/24</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.10.0.0/16</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.168.1.0/24</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.168.102.0/24</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </item>
+       <item>
+        <widget class="QPlainTextEdit" name="ipLog">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QTableWidget" name="hostInfoTable">
-       <column>
-        <property name="text">
-         <string>IP</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Host</string>
-        </property>
-       </column>
-      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -108,21 +134,6 @@
          </property>
          <property name="text">
           <string>保存</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="resetList">
-         <property name="font">
-          <font>
-           <family>Adobe Devanagari</family>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>重置</string>
          </property>
         </widget>
        </item>

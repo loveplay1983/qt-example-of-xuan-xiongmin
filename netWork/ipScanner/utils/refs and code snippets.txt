@@ -1,0 +1,25 @@
+...
+QProcess *ping = new QProcess(this);
+connect(ping, SIGNAL(readyReadStandardOutput()), SLOT(readResult()));
+ping->start(QString("ping.exe %1").arg("192.168.99.99"));
+...
+void Test::readResult()
+{
+	QProcess *ping = qobject_cast<QProcess *>(sender());
+	if (!ping)
+		return;
+	QString res = ping->readAllStandardOutput();
+	if (!res.contains('%'))
+		return;
+	const int percent = res.mid(res.indexOf('('), res.indexOf(')')).section('%', 0, 0).remove('(').toInt();
+	if (percent == 100) {
+		qDebug() << "host not found.";
+	} else {
+		qDebug() << "host found.";
+	}
+}
+
+
+
+
+http://www.tcpdump.org/
