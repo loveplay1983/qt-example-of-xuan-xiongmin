@@ -16,17 +16,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     //    ui->tableWidget->setColumnCount(3);
-    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setColumnCount(3);
     ui->tableWidget->setColumnWidth(0, 120);
     ui->tableWidget->setColumnWidth(1, 200);
 
     QStringList header;
-    //    header.append(QObject::tr("IP地址"));
-    //    header.append(QObject::tr("主机名"));
-    //    header.append("是否联机?");
+    header.append(QObject::tr("索引"));
     header.append(QObject::tr("IP地址"));
-    header.append(QObject::tr("是否联机?"));
-    header.append("");
+    header.append("是否在线?");
     ui->tableWidget->setHorizontalHeaderLabels(header);
     ui->tableWidget->setShowGrid(true);
     ui->tableWidget->setStyleSheet("selection-background-color:lightblue;");
@@ -35,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(startScan()));
     // sort column
-    connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortColumn(int)));
+    //    connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortColumn(int)));
     //    connect(ui->pushButton_18, SIGNAL(clicked()), this, SLOT(resetList()));
 
 
@@ -55,10 +52,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setVisible(false);
 }
 
-
-void MainWindow::sortColumn(int column){
-    ui->tableWidget->sortItems(column, Qt::AscendingOrder);
-}
+// get host name
+//void MainWindow::sortColumn(int column){
+//    ui->tableWidget->sortItems(column, Qt::AscendingOrder);
+//}
 
 
 //void MainWindow::lookupHostName(const QHostInfo &host, int hostIndex){
@@ -96,7 +93,7 @@ void MainWindow::onCommandSuccess(QString ip) {
     QTableWidgetItem *statusItem = new QTableWidgetItem();
     statusItem->setIcon(QIcon(":/images/online_icon.png"));
     //    ui->tableWidget->setItem(hostIndex,2,statusItem);
-    ui->tableWidget->setItem(hostIndex,1,statusItem);
+    ui->tableWidget->setItem(hostIndex,2,statusItem);
 
     onlineCount++;
     onlineHosts << ip;
@@ -115,10 +112,8 @@ void MainWindow::onCommandFailed(QString ip) {
     int hostIndex = scanHosts.indexOf(ip);
     QTableWidgetItem *statusItem = new QTableWidgetItem();
     statusItem->setIcon(QIcon(":/images/offline_icon.png"));
+    ui->tableWidget->setItem(hostIndex,2,statusItem);
     //    ui->tableWidget->setItem(hostIndex,2,statusItem);
-    ui->tableWidget->setItem(hostIndex,1,statusItem);
-
-
     qDebug() << ip + " ping failed 111111";
 }
 
@@ -231,13 +226,17 @@ void MainWindow::startScan() {
     msgBox.setText(messageTip);
     msgBox.setStandardButtons(QMessageBox::No|QMessageBox::Yes);
     msgBox.setDefaultButton(QMessageBox::Yes);
+    // start scanning, write index, ip addr to the first and second column respectively
     if(msgBox.exec() == QMessageBox::Yes){
         qDebug() << "Yes was clicked";
         this->scanHosts = ipRange;
         this->to_scanHosts = ipRange;
         ui->tableWidget->setRowCount(ipRange.size());
         for(int row_index=0;row_index<ipRange.size();++row_index) {
-            ui->tableWidget->setItem(row_index,0,new QTableWidgetItem(ipRange[row_index]));
+            QTableWidgetItem *rowInx = new QTableWidgetItem();
+            rowInx->setData(Qt::DisplayRole, row_index+1);
+            ui->tableWidget->setItem(row_index,0,rowInx);
+            ui->tableWidget->setItem(row_index,1,new QTableWidgetItem(ipRange[row_index]));
         }
 
         int ipArraySize = ipRange.size();
@@ -349,15 +348,15 @@ MainWindow::~MainWindow()
 void MainWindow::on_showOnlineDevicesButton_clicked() {
     ui->tableWidget->setRowCount(_onlineDevices.size());
     // sort columns
-        ui->tableWidget->setSortingEnabled(true);
-        ui->tableWidget->sortByColumn(0, Qt::DescendingOrder);
+    ui->tableWidget->setSortingEnabled(true);
+    ui->tableWidget->sortByColumn(0, Qt::AscendingOrder);
     for(int row_index=0;row_index<_onlineDevices.size();++row_index) {
-        ui->tableWidget->setItem(row_index,0,new QTableWidgetItem(_onlineDevices[row_index]->ip()));
-        //        ui->tableWidget->setItem(row_index, 1, new QTableWidgetItem(_onlineDevices[row_index]->hostName()));
+        ui->tableWidget->setItem(row_index,1,new QTableWidgetItem(_onlineDevices[row_index]->ip()));
+        //        ui->tableWidget->setItem(row_index, 2, new QTableWidgetItem(_onlineDevices[row_index]->hostName()));
         QTableWidgetItem *statusItem = new QTableWidgetItem();
         statusItem->setIcon(QIcon(":/images/online_icon.png"));
         //        ui->tableWidget->setItem(row_index,2,statusItem);
-        ui->tableWidget->setItem(row_index,1,statusItem);
+        ui->tableWidget->setItem(row_index,2,statusItem);
     }
 }
 

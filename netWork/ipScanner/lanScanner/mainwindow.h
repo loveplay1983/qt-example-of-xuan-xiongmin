@@ -9,8 +9,8 @@
 #include "shellprocess.h"
 #include "device.h"
 
-#define THREAD_SIZE 10
-//#define THREAD_SIZE 1
+//#define THREAD_SIZE 10
+#define THREAD_SIZE 1
 
 
 namespace Ui {
@@ -65,7 +65,7 @@ private slots:
     //    void resetList(); // Clear the scanned list
     void on_showOnlineDevicesButton_clicked();
     void on_testSSH_Button_clicked();
-    void sortColumn(int column);
+//    void sortColumn(int column);
 
 
 };
