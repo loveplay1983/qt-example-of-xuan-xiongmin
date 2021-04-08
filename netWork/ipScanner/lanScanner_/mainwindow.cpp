@@ -11,12 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
     onlineCount = 0;
     ui->setupUi(this);
     ui->tableWidget->setWindowTitle("ip list");
-    ui->tableWidget->setSortingEnabled(false);           // disable sorting
-    ui->tableWidget->verticalHeader()->setHidden(true);  // hide index column
+    //    ui->tableWidget->setSortingEnabled(false);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //    ui->tableWidget->setColumnCount(3);
-    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setColumnCount(3);
+    //    ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setColumnWidth(0, 120);
     ui->tableWidget->setColumnWidth(1, 200);
 
@@ -25,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //    header.append(QObject::tr("主机名"));
     //    header.append("是否联机?");
     header.append(QObject::tr("IP地址"));
-    header.append(QObject::tr("是否联机?"));
+    header.append(QObject::tr("是否联机"));
     header.append("");
     ui->tableWidget->setHorizontalHeaderLabels(header);
     ui->tableWidget->setShowGrid(true);
@@ -35,9 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(startScan()));
     // sort column
-    connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortColumn(int)));
-    //    connect(ui->pushButton_18, SIGNAL(clicked()), this, SLOT(resetList()));
-
+    connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortCol(int)));
 
     QString localIP = this->get_localmachine_ip();
     QStringList localIPList = localIP.split(".");
@@ -56,8 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 
-void MainWindow::sortColumn(int column){
-    ui->tableWidget->sortItems(column, Qt::AscendingOrder);
+void MainWindow::sortCol(int column){
+    ui->tableWidget->sortItems(column, Qt::DescendingOrder);
 }
 
 
@@ -97,6 +94,9 @@ void MainWindow::onCommandSuccess(QString ip) {
     statusItem->setIcon(QIcon(":/images/online_icon.png"));
     //    ui->tableWidget->setItem(hostIndex,2,statusItem);
     ui->tableWidget->setItem(hostIndex,1,statusItem);
+    QTableWidgetItem *tableOrder = new QTableWidgetItem();
+    tableOrder->setText(QString::number(hostIndex));
+    ui->tableWidget->setItem(hostIndex, 2, tableOrder);
 
     onlineCount++;
     onlineHosts << ip;
@@ -117,6 +117,10 @@ void MainWindow::onCommandFailed(QString ip) {
     statusItem->setIcon(QIcon(":/images/offline_icon.png"));
     //    ui->tableWidget->setItem(hostIndex,2,statusItem);
     ui->tableWidget->setItem(hostIndex,1,statusItem);
+
+    QTableWidgetItem *tableOrder = new QTableWidgetItem();
+    tableOrder->setText(QString::number(hostIndex));
+    ui->tableWidget->setItem(hostIndex, 2, tableOrder);
 
 
     qDebug() << ip + " ping failed 111111";
@@ -349,8 +353,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_showOnlineDevicesButton_clicked() {
     ui->tableWidget->setRowCount(_onlineDevices.size());
     // sort columns
-        ui->tableWidget->setSortingEnabled(true);
-        ui->tableWidget->sortByColumn(0, Qt::DescendingOrder);
+    //    ui->tableWidget->setSortingEnabled(true);
+    //    ui->tableWidget->sortByColumn(2, Qt::DescendingOrder);
     for(int row_index=0;row_index<_onlineDevices.size();++row_index) {
         ui->tableWidget->setItem(row_index,0,new QTableWidgetItem(_onlineDevices[row_index]->ip()));
         //        ui->tableWidget->setItem(row_index, 1, new QTableWidgetItem(_onlineDevices[row_index]->hostName()));
