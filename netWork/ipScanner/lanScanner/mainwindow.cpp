@@ -33,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(startScan()));
     // sort column
     //    connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortColumn(int)));
-    //    connect(ui->pushButton_18, SIGNAL(clicked()), this, SLOT(resetList()));
+    // export excel file
+    connect(ui->toExcel, SIGNAL(clicked()), this, SLOT(exportExcel()));
 
 
     QString localIP = this->get_localmachine_ip();
@@ -51,6 +52,87 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setValue(0);
     ui->progressBar->setVisible(false);
 }
+
+// export result to excel file
+void MainWindow::exportExcel(){
+    QString fileName = QFileDialog::getSaveFileName(this, tr("保存文件"), "", tr("文件(*.csv"));
+    if (!fileName.isEmpty()){
+        QFile file(fileName);
+        // create file with Truncate and writeonly mode
+        // truncate -  data will be covered
+        bool result = file.open(QIODevice::Truncate|QIODevice::WriteOnly);
+        if(!result) return;
+        QTextStream stream(&file);
+        QString contents;
+
+        // acquire header
+        QHeaderView *header = ui->tableWidget->horizontalHeader();
+        if(header){
+
+            for(int i = 0; i < header->count(); i++){
+                QTableWidgetItem *item = ui->tableWidget->horizontalHeaderItem(i);
+                if(!item) continue;
+                contents += item->text() + ",";
+            }
+            contents += "\n";
+        }
+
+        for(int i = 0; i < ui->tableWidget->rowCount();i++){
+            for(int j = 0; j< ui->tableWidget->columnCount();j++){
+                QTableWidgetItem *item = ui->tableWidget->item(i, j);
+                if(!item) continue;
+                QString str = item->text();
+                str.replace(",", " ");
+                contents += str + ",";
+            }
+            contents += "\n";
+        }
+        stream << contents;  // insert contents to stream, i.e. insert the data to file
+        file.close();
+    }
+    if(QMessageBox::Yes == QMessageBox::information(nullptr, QObject::tr("文件导出"), QString("导出成功，是否打开查看?"), QMessageBox::Yes, QMessageBox::No)){
+        /* ********************************************************************************************************************************************
+         * Accessing the Windows Registry
+         * On Windows, QSettings lets you access settings that have been written with QSettings (or settings in a supported format, e.g., string data)
+         * in the system registry. This is done by constructing a QSettings object with a path in the registry and QSettings::NativeFormat.
+         * ********************************************************************************************************************************************/
+        QSettings settings("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office",QSettings::NativeFormat);
+        QString /*regDefault, */regExcelPath;
+//        bool bSuccess;
+        regExcelPath = settings.value("16.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("15.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("14.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("13.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("12.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("11.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("10.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty())
+            regExcelPath = settings.value("9.0/Excel/InstallRoot/Path").toString();
+        if(regExcelPath.isEmpty()){
+            QMessageBox::information(nullptr, "注意", "系统没有安装Excel软件，无法查看，请安装Microsoft Office套件");
+            return;
+        }
+        QProcess *runExcel = new QProcess;
+        QString excelExe = regExcelPath + "excel.exe";
+        QString excelOpen = "/safe";
+        QString excelDoc = fileName;
+        QStringList list;
+        list << excelDoc;
+        if(runExcel){
+            runExcel->start(excelExe, list);
+            runExcel->waitForStarted(5000); // wait for Excel to start
+            runExcel->waitForFinished(1000);
+        }
+//        delete runExcel;
+    }
+}
+
 
 // get host name
 //void MainWindow::sortColumn(int column){
@@ -234,7 +316,7 @@ void MainWindow::startScan() {
         ui->tableWidget->setRowCount(ipRange.size());
         for(int row_index=0;row_index<ipRange.size();++row_index) {
             QTableWidgetItem *rowInx = new QTableWidgetItem();
-            rowInx->setData(Qt::DisplayRole, row_index+1);
+            rowInx->setData(Qt::DisplayRole, row_index+1);    // making sure the content of QTableWidget is numeric, hence it is sortable
             ui->tableWidget->setItem(row_index,0,rowInx);
             ui->tableWidget->setItem(row_index,1,new QTableWidgetItem(ipRange[row_index]));
         }

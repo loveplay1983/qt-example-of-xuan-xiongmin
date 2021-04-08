@@ -5,11 +5,17 @@
 #include <QProcess>
 #include <QMovie>
 #include <QHostInfo>
+#include <QFileDialog>
+#include <QFile>
+#include <QIODevice>
+#include <QTextStream>
+#include <QHeaderView>
+#include <QSettings>
 
 #include "shellprocess.h"
 #include "device.h"
 
-//#define THREAD_SIZE 10
+//#define THREAD_SIZE 15
 #define THREAD_SIZE 1
 
 
@@ -67,6 +73,7 @@ private slots:
     void on_testSSH_Button_clicked();
 //    void sortColumn(int column);
 
+    void exportExcel();
 
 };
 
