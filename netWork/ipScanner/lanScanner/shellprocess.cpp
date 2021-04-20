@@ -20,20 +20,29 @@ void ShellProcess::run() {
     QString ip;
     foreach( ip, ipRange ){
 
-        QString cmdStr = QString("ping %1 -n -2 -w %2").arg(ip).arg(1000);
+        QString cmdStr = QString("ping %1 -n 2 -w %2").arg(ip).arg(1000);
         QProcess cmd;
         cmd.start(cmdStr);
         cmd.waitForReadyRead(1000);
         cmd.waitForFinished(1000);
 
         QString hostResponse = cmd.readAll();
+
+
+        // Test for the output of QProcess.readall()
+
+//        qDebug() << "output of hostResponses" << hostResponse;
+
+
+
+
         // emit success or failure signals with ip address
         if(hostResponse.indexOf("TTL") == -1){
             emit commandFailed(ip);
             qDebug() << "shell ping " + ip + " failed";
         } else {
             emit commandSuccess(ip);
-            qDebug() << "shell ping " + ip + " success";
+            qDebug() << "shell ping " + ip + " s    uccess";
         }
     }
 }
