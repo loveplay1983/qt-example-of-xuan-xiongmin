@@ -65,7 +65,7 @@ void DetectRestart::showMsg(){
 void DetectRestart::closeEvent(QCloseEvent *event){
     this->showMsg();
     this->hide();
-    event->ignore();
+    event->ignore();   // ignore the downstream signal, i.e. ignore the signal which would cause the program to quit, keep the program alive
 }
 
 // Connect signal and slot for actions
@@ -82,9 +82,48 @@ void DetectRestart::createconnection(){
 
 
 void DetectRestart::timer(){
-
+    processTimer = new QTimer;
+    processTimer->setInterval(5000);
+    processTimer->start();
+    connect(processTimer, &QTimer::timeout, this, &DetectRestart::detector);
 }
 
+
+void DetectRestart::detector(){
+    /*
+    processControl = new QProcess;
+//    QString taskName1 = "tasklist";
+//    QString taskName2 = "C:\\Users\\Administrator\\Workspace\\xuan_work\\programming\\Qt\\Qt5Test\\netWork\\ipScanner\\deploy\\ouput\\ip_scan.exe";
+    QString selfService = "C:\\Users\\Administrator\\Desktop\\NgariYYT.exe.lnk";
+    processControl->start("tasklist", QStringList() << "-fi" << "imagename eq NgariYYT.exe");
+    processControl->waitForReadyRead(1000);
+    processControl->waitForFinished(1000);
+    QString returned = processControl->readAll();
+
+    qDebug() << returned;
+    qDebug() << returned.indexOf("Image Name");
+    qDebug() << returned.length();
+
+    if(returned.contains("NgariYYT.exe", Qt::CaseInsensitive)){
+        qDebug() << "The program is running";
+    } else {
+        processControl->start(selfService);
+    }
+*/
+
+    processControl = new QProcess;
+    QString test = "run.bat";
+    processControl->start("tasklist", QStringList() << "-fi" << "imagename eq NgariYYT.exe");
+    processControl->waitForReadyRead(1000);
+    processControl->waitForFinished(1000);
+    QString returned = processControl->readAll();
+
+    if(returned.contains("NgariYYT.exe", Qt::CaseInsensitive)){
+        qDebug() << "The program is running";
+    } else {
+        processControl->start(test);
+    }
+}
 
 // Initialize the program
 void DetectRestart::init(){

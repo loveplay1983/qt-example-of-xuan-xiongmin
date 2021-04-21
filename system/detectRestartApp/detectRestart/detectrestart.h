@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <QProcess>
 #include <QString>
+#include <QStringList>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class DetectRestart; }
